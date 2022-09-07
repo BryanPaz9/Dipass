@@ -1,0 +1,11 @@
+{
+  "name": "dipass",
+  "version": "1.0.0",
+  "description": "Password manager for Disatel",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "dev.ryger",
+  "license": "ISC"
+}

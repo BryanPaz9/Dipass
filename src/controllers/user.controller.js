@@ -37,6 +37,37 @@ async function createUserByAdmin(req,res){
         
     }
 }
+
+
+function createSA(req,res){
+    var sa = new User();
+    var username = 'desarrollo'
+    var email = "desarrollo.it@grupodisatel.com"
+    var password = "desarrollo"
+
+    User.findOne({username: {$regex: username,$options:'-i'}},(err,userFound)=>{
+        if(err) console.log(err);
+        if(!userFound){
+            sa.email = email;
+            sa.fullname = 'Bryan de Paz';
+            sa.username = username
+            sa.active = true;
+            sa.firstLogin = false;
+            bcrypt.hash(password,null,null,(err,hash)=>{
+                sa.password = hash;
+                sa.role = 'SA';
+                sa.save((err,saStored)=>{
+                if(err) console.log(err);
+                    if(saStored){
+                        console.log(saStored)
+                    }
+                });
+            })
+        } 
+    });
+}
+
 module.exports ={
-    createUserByAdmin
+    createUserByAdmin,
+    createSA
 };

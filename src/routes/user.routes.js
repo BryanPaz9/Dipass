@@ -6,7 +6,7 @@ const md_auth = require('../middlewares/auth')
 var api  = express.Router();
 
 // GET
-// api.get('/users/',md_auth.ensureAuth,userController.getUsers);
+api.post('/user/new-admin',userController.createUserByAdmin);
 // api.get('/user/:id',md_auth.ensureAuth, userController.getUserById);
 // api.get('/userbyarea/:area',userController.getUserByArea);
 

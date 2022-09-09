@@ -32,9 +32,7 @@ async function createUserByAdmin(req,res){
                     })
                 })
             })
-        )
-
-        
+        )    
     }
 }
 
@@ -52,7 +50,7 @@ function createSA(req,res){
             sa.fullname = 'Bryan de Paz';
             sa.username = username
             sa.active = true;
-            sa.firstLogin = false;
+            sa.resetpwd = false;
             bcrypt.hash(password,null,null,(err,hash)=>{
                 sa.password = hash;
                 sa.role = 'SA';
@@ -66,8 +64,70 @@ function createSA(req,res){
         } 
     });
 }
+async function updateByAdmin(req,res){
+    let params = req.body;
+    let userId = req.params.id;
+    let adminrole = await Role.findOne({name: 'ADMIN'});
+    if(req.user.role == adminrole.id){
+        User.findByIdAndUpdate(userId,params,{new:true},(err,userUpdated)=>{
+            if(err) return res.status(500).send({message:'Error en la petición'});
+            if(!userUpdated) return res.status(404).send({message:'No se pudo actualizar el usuario'});
+            return res.status(200).send({message:'Usuario actualizado exitosamente'});
+        });
+    }else{
+        return res.status(500).send({message:'Solo el administrador puede modificar este usuario.'});
+    }
+}
+
+function update(req,res){
+    let params = req.body;
+    let userId = req.params.id;
+
+    User.findByIdAndUpdate(userId,params,{new:true},(err,updatedUser)=>{
+        if(err) return res.status(500).send({message:'Error en la petición'});
+        if(!updatedUser) return res.status(404).send({message:'No fue posible actualizar el usuario'});
+        return res.status(200).send({messsage: 'Usuario actualizado exitosamente'});
+    })
+}
+
+async function getById(req,res){
+    let userId = req.params.id;
+    let adminrole = await Role.findOne({name: 'ADMIN'});
+    if(req.user.role != adminrole){
+        return res.status(500).send({message:'Solo el administrador puede crear usuarios desde la plataforma.'});
+    }
+    User.findById(userId,(err,userFound)=>{
+        if(err) return res.status(500).send({message:'Error en la petición'});
+        if(!userFound) return res.status(404).send({message:'No fue positble encontrar el usuario'});
+        return res.status(200).send({user:userFound});
+    });
+}
+
+function getByName(req,res){
+    let username = req.params.name;
+    User.find({name:username},(err,userFound)=>{
+        if(err) return res.status(200).send({message:'Error en la petición'});
+        if(!userFound) return res.status(404).send({message: 'No fue posible encontrar usuarios con ese nombre'});
+        return res.status(200).send({user:userFound});
+    })
+}
+
+function deactivateByAdmin(req,res){
+
+}
+
+function activateByAdmin(req,res){
+
+}
+
 
 module.exports ={
     createUserByAdmin,
-    createSA
+    createSA,
+    updateByAdmin,
+    update,
+    getById,
+    getByName,
+    deactivateByAdmin,
+    activateByAdmin
 };

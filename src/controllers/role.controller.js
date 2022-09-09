@@ -15,6 +15,20 @@ function create(req,res){
     }
 }
 
+async function createAdminRole(req,res){
+    let name = 'ADMIN';
+    let role = new Role();
+    let admin = await Role.findOne({name:name});
+    if(!admin){
+        role.name = name;
+        role.save((err,adminRoleStored)=>{
+            if(err) return res.status(500).send({message:'Error al realizar la petición'});
+            if(!adminRoleStored) return res.status(404).send({message:'No se pudo realizar el registro del rol de adminstrador.'});
+            return res.status(200).send({message:'Rol de administrador creado correctamente.'});
+        })
+    }
+}
+
 function get(req,res){
     Role.find((err,roles)=>{
         if(err) return res.status(500).send({message:'Error en la petición'});
@@ -38,12 +52,18 @@ function update(req,res){
     Role.findByIdAndUpdate(roleId,{new:true},(err,roleUpdated)=>{
         if(err) return res.status(500).send({message:'Error en la petición'});
         if(!roleUpdated) return res.status(404).send({message:'No fue posible actualizar el rol'});
-        return res.status(200).send({message:'Usuario actualizado correctamente.'})
+        return res.status(200).send({message:'Rol actualizado correctamente.'})
     });
 }
 
 function deactivate(req,res){
-
+    let roleid = req.params.id;
+    let active = false;
+    Role.findByIdAndUpdate(roleid,{active:active},{new:true},(err,deactivated)=>{
+        if(err) return res.status(500).send({message:'Error en la petición'});
+        if(!deactivated) return res.status(404).send({message:'No se pudo desactivar el rol'});
+        return res.status(200).send({message:'Rol desactivado correctamente'});
+    });
 }
 
 module.exports={
@@ -51,5 +71,6 @@ module.exports={
     get,
     getById,
     update,
-    deactive
+    deactivate,
+    createAdminRole
 };

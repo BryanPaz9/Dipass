@@ -2,7 +2,7 @@
 var User = require('../models/user.model');
 var Role = require('../models/role.model');
 var bcrypt = require('bcrypt-nodejs');
-var jwt = require('../services');
+var jwt = require('../services/jwt');
 
 async function signUp(req,res){
     let params = req.body;

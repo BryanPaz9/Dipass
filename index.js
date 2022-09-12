@@ -5,7 +5,6 @@ const APP = require('./app');
 const PORT = 3000;
 const VERSION = '1.1.2';
 const userController = require('./src/controllers/user.controller');
-// const departmentController = require('./src/controllers/department.controller');
 const roleController = require('./src/controllers/role.controller');
 
 MONGOOSE.Promise = global.Promise
@@ -18,6 +17,5 @@ MONGOOSE.connect('mongodb://localhost:27017/Dipass', {useNewUrlParser:true,useUn
         roleController.createAdminRole();
         roleController.createUserRole();
         userController.createSA();
-        // correlativeController.generateCorrelativeOfTicket();
     });
 }).catch(err => console.log(err));

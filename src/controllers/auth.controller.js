@@ -7,19 +7,23 @@ var jwt = require('../services/jwt');
 async function signUp(req,res){
     let params = req.body;
     let user = new User();
-    let userrole = Role.findOne({name:'USER'});
+    let userrole = await Role.findOne({name:'USER'});
     if(params.email && params.username && params.fullname && params.password){
         user.email = params.email;
         user.fullname = params.fullname;
         user.active = true;
         user.resetpwd = false;
+        user.username = params.username;
         User.find(
-            {username:{$regex:user.username,$options: '-i'}}).exec((err,userFound)=>{
-                if(err) return res.status(500).send({message:'Error en la petición'});
-                if(userFound) return res.status(500).send({message:'Este nombre de usuario ya se encuentra registrado '});
+            {username:user.username}).exec((err,userFound)=>{
+                if(err){
+                    console.log(err);
+                    return res.status(500).send({message:'Error en la petición'});
+                } 
+                if(userFound && userFound.length>0) return res.status(500).send({message:'Este nombre de usuario ya se encuentra registrado '});
                 bcrypt.hash(params.password,null,null,(err,hash)=>{
                     user.password = hash;
-                    user.roleid = userrole.id;
+                    user.roleid = userrole._id;
                     user.save((err,userStored)=>{
                         if(err) return res.status(500).send({message:'Error en el servidor'});
                         if(!userStored) return res.status(500).send({message:'No fue registrar el usuario.'});

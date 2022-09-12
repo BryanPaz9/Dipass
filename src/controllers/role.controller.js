@@ -22,10 +22,30 @@ async function createAdminRole(req,res){
     if(!admin){
         role.name = name;
         role.save((err,adminRoleStored)=>{
-            if(err) return res.status(500).send({message:'Error al realizar la petición'});
-            if(!adminRoleStored) return res.status(404).send({message:'No se pudo realizar el registro del rol de adminstrador.'});
-            return res.status(200).send({message:'Rol de administrador creado correctamente.'});
-        })
+            if(err) console.log('Error al crear el rol de admin');
+            if(!adminRoleStored) {
+                console.log('No se ha creado el rol admin')
+            }else{
+                console.log(adminRoleStored);
+            }
+        });
+    }
+}
+
+async function createUserRole(req,res){
+    let name = 'USER';
+    let role = new Role();
+    let admin = await Role.findOne({name:name});
+    if(!admin){
+        role.name = name;
+        role.save((err,userRoleStored)=>{
+            if(err) console.log('Error al crear el rol de admin');
+            if(!userRoleStored) {
+                console.log('No se ha creado el rol admin')
+            }else{
+                console.log(userRoleStored);
+            }
+        });
     }
 }
 
@@ -72,5 +92,6 @@ module.exports={
     getById,
     update,
     deactivate,
-    createAdminRole
+    createAdminRole,
+    createUserRole
 };

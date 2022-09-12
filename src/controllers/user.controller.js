@@ -37,12 +37,12 @@ async function createUserByAdmin(req,res){
 }
 
 
-function createSA(req,res){
+async function createSA(req,res){
     var sa = new User();
     var username = 'desarrollo'
     var email = "desarrollo.it@grupodisatel.com"
     var password = "desarrollo"
-
+    var roleid = await Role.findOne({name:'ADMIN'});
     User.findOne({username: {$regex: username,$options:'-i'}},(err,userFound)=>{
         if(err) console.log(err);
         if(!userFound){
@@ -53,7 +53,7 @@ function createSA(req,res){
             sa.resetpwd = false;
             bcrypt.hash(password,null,null,(err,hash)=>{
                 sa.password = hash;
-                sa.role = 'SA';
+                sa.roleid = roleid._id;
                 sa.save((err,saStored)=>{
                 if(err) console.log(err);
                     if(saStored){
@@ -102,6 +102,9 @@ async function getById(req,res){
         return res.status(200).send({user:userFound});
     });
 }
+
+//GET BY ROLE 
+//db.getCollection('users').find({roleid: new ObjectId('631f4e92c66c915b42bd947d')})
 
 function getByName(req,res){
     let username = req.params.name;

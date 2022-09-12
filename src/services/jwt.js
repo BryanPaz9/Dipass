@@ -2,7 +2,7 @@
 
 var jwt  = require('jwt-simple');
 var moment = require('moment');
-var secret = 'T!i911';
+var secret = 'f4$sT5x';
 
 exports.createToken = function (user){
     var payload = {

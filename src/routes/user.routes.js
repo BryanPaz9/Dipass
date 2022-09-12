@@ -6,17 +6,13 @@ const md_auth = require('../middlewares/auth')
 var api  = express.Router();
 
 // GET
-api.post('/user/new-admin',userController.createUserByAdmin);
-// api.get('/user/:id',md_auth.ensureAuth, userController.getUserById);
-// api.get('/userbyarea/:area',userController.getUserByArea);
-
-// //POST
-// api.post('/user/create',md_auth.ensureAuth,userController.createUserByAdmin);
-
-// //PUT
-// api.put('/user/edit/:id',md_auth.ensureAuth,userController.updateUser);
-
-// //DELETE
-// api.delete('/user/delete/:id',md_auth.ensureAuth,userController.deleteUser);
+api.post('/users/new-admin',md_auth.ensureAuth,userController.createUserByAdmin);
+api.post('/users/deactivate/:id',md_auth.ensureAuth,userController.deactivateByAdmin);
+api.post('/users/activate/:id',md_auth.ensureAuth,userController.activateByAdmin);
+api.get('/user/:id',md_auth.ensureAuth, userController.getById);
+api.get('/users/name/:name',md_auth.ensureAuth, userController.getByName);
+api.get('/users/',md_auth.ensureAuth,userController.get);
+api.put('/users/update/:id', md_auth.ensureAuth,userController.update);
+api.put('/users/update-admin/:id',md_auth.ensureAuth,userController.updateByAdmin);
 
 module.exports = api;

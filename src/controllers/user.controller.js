@@ -5,7 +5,7 @@ var bcrypt = require('bcrypt-nodejs');
 async function createUserByAdmin(req,res){
     let params = req.body;
     let adminrole = await Role.findOne({name: 'ADMIN'});
-    if(req.user.role != adminrole){
+    if(req.user.roleid != adminrole){
         return res.status(500).send({message:'Solo el administrador puede crear usuarios desde la plataforma.'});
     }
     if(params.email && params.fullname && params.username && params.password && params.roleid){
@@ -68,7 +68,7 @@ async function updateByAdmin(req,res){
     let params = req.body;
     let userId = req.params.id;
     let adminrole = await Role.findOne({name: 'ADMIN'});
-    if(req.user.role == adminrole.id){
+    if(req.user.roleid == adminrole.id){
         User.findByIdAndUpdate(userId,params,{new:true},(err,userUpdated)=>{
             if(err) return res.status(500).send({message:'Error en la petición'});
             if(!userUpdated) return res.status(404).send({message:'No se pudo actualizar el usuario'});
@@ -93,8 +93,8 @@ function update(req,res){
 async function getById(req,res){
     let userId = req.params.id;
     let adminrole = await Role.findOne({name: 'ADMIN'});
-    if(req.user.role != adminrole){
-        return res.status(500).send({message:'Solo el administrador puede crear usuarios desde la plataforma.'});
+    if(req.user.roleid != adminrole._id){
+        return res.status(500).send({message:'Solo el administrador puede listar usuarios desde la plataforma.'});
     }
     User.findById(userId,(err,userFound)=>{
         if(err) return res.status(500).send({message:'Error en la petición'});
@@ -115,6 +115,14 @@ function getByName(req,res){
     })
 }
 
+function get(req,res){
+    User.find({},(err,usersFound)=>{
+        if(err) return res.status(200).send({message:'Error en la petición'});
+        if(!usersFound) return res.status(404).send({message: 'No fue posible encontrar los usuarios'});
+        return res.status(200).send({users:usersFound});
+    })
+}
+
 function deactivateByAdmin(req,res){
 
 }
@@ -129,6 +137,7 @@ module.exports ={
     createSA,
     updateByAdmin,
     update,
+    get,
     getById,
     getByName,
     deactivateByAdmin,

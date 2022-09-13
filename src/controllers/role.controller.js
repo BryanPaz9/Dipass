@@ -69,7 +69,7 @@ function getById(req,res){
 
 function update(req,res){
     let roleId = req.params.id;
-    Role.findByIdAndUpdate(roleId,{new:true},(err,roleUpdated)=>{
+    Role.findByIdAndUpdate(roleId,params,{new:true},(err,roleUpdated)=>{
         if(err) return res.status(500).send({message:'Error en la petición'});
         if(!roleUpdated) return res.status(404).send({message:'No fue posible actualizar el rol'});
         return res.status(200).send({message:'Rol actualizado correctamente.'})

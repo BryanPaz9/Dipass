@@ -3,7 +3,7 @@
 const MONGOOSE = require('mongoose');
 const APP = require('./app');
 const PORT = 3000;
-const VERSION = '1.1.2';
+const VERSION = '1.1.3';
 const userController = require('./src/controllers/user.controller');
 const roleController = require('./src/controllers/role.controller');
 

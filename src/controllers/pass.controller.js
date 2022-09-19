@@ -28,13 +28,17 @@ function create(req, res){
     }else{
         return res.status(500).send({message:'Debe llenar los campos obligatorios'});
     }
-
-
 }
 
 function update(req,res){
     let params = req.body;
-    let 
+    let passid = req.params.id;
+
+    Pass.findByIdAndUpdate(passid,{params},{new:true},(err,updated)=>{
+        if(err) return res.status(500).send({message:'Error en la transacción.'});
+        if(!updated) return res.status(404).send({message:'No fue posible actualizar la credencial.'});
+        return res.status(200).send({message:'Credencial actualizada correctamente.'});
+    })
 }
 
 function get(req,res)   {
@@ -45,19 +49,40 @@ function get(req,res)   {
     })
 }
 
-function getById(){
-
+function getById(req,res){
+    let passid = req.params.id;
+    Pass.findById(passid,(err,pass)=>{
+        if(err) return res.status(500).send({message:'Error en la petición'});
+        if(!pass) return res.status(404).send({message:'No se pudo obtener la infomación.'});
+        return res.status(200).send({pass:pass});
+    })
 }
 
-function deactivate(){
-
+function deactivate(req,res){
+    let active = false;
+    let passid = req.params.id;
+    Pass.findByIdAndUpdate(passid,{active:active},{new:true},(err,deactivated)=>{
+        if(err) return res.status(500).send({messsage:'Error en la transacción.'});
+        if(!deactivated) return res.status(404).send({message:'No se pudo eliminar la credencial.'})
+        return res.status(200).send({message:'Credencial eliminada exitosamente.'});
+    })
 }
 
 function activate(){
-
+    let active = true;
+    let passid = req.params.id;
+    Pass.findByIdAndUpdate(passid,{active:active},{new:true},(err,activated)=>{
+        if(err) return res.status(500).send({message:'Error en la petición.'});
+        if(!actiavted) return res.status(404).send({message:'No se pudo activar la credencial.'});
+        return res.status(200).send({message:'Credencial activada exitósamente.'});
+    });
 }
 
 module.exports={
     get,
     create,
+    getById,
+    update,
+    deactivate,
+    activate
 }
